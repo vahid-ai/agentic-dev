@@ -47,6 +47,21 @@ docker compose logs -f otel-collector
 docker compose down
 ```
 
+## Agent Code Intelligence plugin
+
+The repository vendors Agent Code Intelligence v1.0.0 in
+[`plugins/agent-code-intelligence`](plugins/agent-code-intelligence). Run Claude Code with the
+plugin directly from the checkout:
+
+```bash
+claude --plugin-dir "$PWD/plugins/agent-code-intelligence"
+```
+
+The plugin provides code-search routing, optional MCP profiles, and opt-in failure capture. Its
+failure hook does not persist data unless `AGENT_TOOLKIT_CAPTURE_FAILURES=1` is set. See the
+[plugin README](plugins/agent-code-intelligence/README.md) for its skills, security posture, and
+configuration options.
+
 ## End-to-end telemetry test
 
 The normal `tests/` suite remains offline. A separate integration test provisions an isolated
@@ -116,6 +131,8 @@ separate network-restricted sandbox.
 config/repositories.toml       planned repository corpus (metadata only)
 infra/otel-collector.yaml      OTLP -> ClickHouse pipeline
 notebooks/                     executable Marimo labs
+plugins/agent-code-intelligence/
+                               vendored Claude Code and Codex code-intelligence plugin
 scripts/claude-with-telemetry.sh
 src/agentic_dev/               catalog, settings, and ClickHouse query helpers
 tests/                         offline scaffold tests
