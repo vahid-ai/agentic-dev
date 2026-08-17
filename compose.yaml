@@ -1,0 +1,58 @@
+name: agentic-dev
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.7.1
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DATABASE:-otel}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-agentic}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-agentic-dev}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports:
+      - "127.0.0.1:${CLICKHOUSE_HTTP_PORT:-8123}:8123"
+      - "127.0.0.1:${CLICKHOUSE_NATIVE_PORT:-9000}:9000"
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "clickhouse-client --user \"$${CLICKHOUSE_USER}\" --password \"$${CLICKHOUSE_PASSWORD}\" --query 'SELECT 1'",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.157.0
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    environment:
+      CLICKHOUSE_DATABASE: ${CLICKHOUSE_DATABASE:-otel}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-agentic}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-agentic-dev}
+    volumes:
+      - ./infra/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+      - "127.0.0.1:${OTEL_GRPC_PORT:-4317}:4317"
+      - "127.0.0.1:${OTEL_HTTP_PORT:-4318}:4318"
+      - "127.0.0.1:${OTEL_HEALTH_PORT:-13133}:13133"
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/otelcol-contrib",
+          "validate",
+          "--config=/etc/otelcol-contrib/config.yaml",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  clickhouse-data:

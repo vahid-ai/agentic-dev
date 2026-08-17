@@ -1,0 +1,84 @@
+# Metadata only. The scaffold MUST NOT clone these entries.
+# See docs/repository-imports.md before changing a status to "ready".
+
+[[repositories]]
+id = "requests"
+url = "https://github.com/psf/requests.git"
+category = "python"
+purpose = "Readable, mature Python change and repository-exploration labs"
+status = "placeholder"
+pinned_commit = "TODO"
+risk = "standard"
+
+[[repositories]]
+id = "scikit-learn"
+url = "https://github.com/scikit-learn/scikit-learn.git"
+category = "machine-learning"
+purpose = "Convention discovery and cross-language ML engineering labs"
+status = "placeholder"
+pinned_commit = "TODO"
+risk = "standard"
+
+[[repositories]]
+id = "spring-data-examples"
+url = "https://github.com/spring-projects/spring-data-examples.git"
+category = "spring-mongodb"
+purpose = "Spring Boot and MongoDB repository, aggregation, and reactive labs"
+status = "placeholder"
+pinned_commit = "TODO"
+risk = "standard"
+
+[[repositories]]
+id = "now-in-android"
+url = "https://github.com/android/nowinandroid.git"
+category = "android"
+purpose = "Modern Android architecture and agent-instruction comparison labs"
+status = "placeholder"
+pinned_commit = "TODO"
+risk = "standard"
+
+[[repositories]]
+id = "express"
+url = "https://github.com/expressjs/express.git"
+category = "nodejs"
+purpose = "Compact Node.js behavior tracing and compatibility labs"
+status = "placeholder"
+pinned_commit = "TODO"
+risk = "standard"
+
+[[repositories]]
+id = "click"
+url = "https://github.com/pallets/click.git"
+category = "best-practices"
+purpose = "Small, disciplined library for repository-level agent instructions"
+status = "placeholder"
+pinned_commit = "TODO"
+risk = "standard"
+
+[[repositories]]
+id = "h11"
+url = "https://github.com/python-hyper/h11.git"
+category = "benchmark-baseline"
+purpose = "Token-efficient protocol and state-machine benchmark corpus"
+status = "placeholder"
+pinned_commit = "TODO"
+risk = "standard"
+
+[[repositories]]
+id = "juice-shop"
+url = "https://github.com/juice-shop/juice-shop.git"
+category = "vulnerability-hunting"
+purpose = "Known-ground-truth application security exercises"
+status = "placeholder"
+pinned_commit = "TODO"
+risk = "vulnerable"
+
+[[repositories]]
+id = "overtly-malicious-skills"
+url = "https://github.com/trailofbits/overtly-malicious-skills.git"
+category = "agent-supply-chain"
+purpose = "Malicious agent skill and scanner-bypass defensive exercises"
+status = "placeholder"
+pinned_commit = "TODO"
+risk = "malicious"
+

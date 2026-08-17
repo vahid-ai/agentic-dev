@@ -1,0 +1,59 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 256
+
+exporters:
+  clickhouse:
+    endpoint: tcp://clickhouse:9000?dial_timeout=10s
+    database: ${env:CLICKHOUSE_DATABASE}
+    username: ${env:CLICKHOUSE_USER}
+    password: ${env:CLICKHOUSE_PASSWORD}
+    create_schema: true
+    async_insert: true
+    ttl: 168h
+    compress: lz4
+    sending_queue:
+      enabled: true
+      num_consumers: 2
+      queue_size: 1000
+      batch:
+        min_size: 100
+        flush_timeout: 5s
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_interval: 10s
+      max_elapsed_time: 60s
+
+service:
+  extensions: [health_check]
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter]
+      exporters: [clickhouse]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter]
+      exporters: [clickhouse]
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter]
+      exporters: [clickhouse]
+  telemetry:
+    logs:
+      level: info
+

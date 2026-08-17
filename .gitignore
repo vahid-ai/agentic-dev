@@ -1,0 +1,13 @@
+.DS_Store
+.env
+.marimo/
+notebooks/__marimo__/
+.pytest_cache/
+.ruff_cache/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Example repositories are intentionally not imported by the scaffold.
+workspaces/repos/*
+!workspaces/repos/README.md
