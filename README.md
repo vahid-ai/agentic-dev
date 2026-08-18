@@ -49,7 +49,7 @@ docker compose down
 
 ## Agent Code Intelligence plugin
 
-The repository vendors Agent Code Intelligence v1.0.0 in
+The repository vendors Agent Code Intelligence v1.0.1 in
 [`plugins/agent-code-intelligence`](plugins/agent-code-intelligence). Run Claude Code with the
 plugin directly from the checkout:
 

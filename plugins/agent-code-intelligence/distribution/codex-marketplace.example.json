@@ -3,7 +3,7 @@
     {
       "name": "agent-code-intelligence",
       "source": {
-        "path": "./agent-code-intelligence-1.0.0"
+        "path": "./agent-code-intelligence-1.0.1"
       },
       "interface": {
         "displayName": "Agent Code Intelligence"

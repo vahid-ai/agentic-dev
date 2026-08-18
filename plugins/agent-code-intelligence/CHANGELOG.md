@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 — 2026-08-18
+
+- Replaced Serena's source-based `uvx` launch with the installed `serena-agent` CLI.
+- Added host-specific Serena contexts for Claude Code and Codex profile rendering.
+- Updated setup guidance to require Python 3.13 installation and `serena init`.
+
 ## 1.0.0 — 2026-08-11
 
 - Initial dual-host Claude Code + Codex plugin manifests.

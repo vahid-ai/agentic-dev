@@ -1,4 +1,4 @@
-# Agent Code Intelligence v1.0.0
+# Agent Code Intelligence v1.0.1
 
 A dual-host Claude Code + Codex plugin for **token-efficient codebase understanding** and **verified agent memory**.
 
@@ -42,12 +42,12 @@ Letta (persistent stateful agent architecture)
 
 ## Why the plugin does not bundle every MCP as always-on
 
-MCP tool schemas themselves consume context, overlapping code indexers duplicate work, and remote servers expand the trust boundary. v1.0.0 therefore bundles **routing skills + setup profiles**, not a giant `.mcp.json` that starts everything automatically.
+MCP tool schemas themselves consume context, overlapping code indexers duplicate work, and remote servers expand the trust boundary. v1.0.1 therefore bundles **routing skills + setup profiles**, not a giant `.mcp.json` that starts everything automatically.
 
 Use the `mcp-profile-setup` skill or:
 
 ```bash
-python3 scripts/render_mcp_config.py minimal
+python3 scripts/render_mcp_config.py minimal claude-code
 ```
 
 Then review and copy only the servers you actually want.
@@ -73,7 +73,7 @@ Then review and copy only the servers you actually want.
 Test a local checkout directly:
 
 ```bash
-claude --plugin-dir /absolute/path/to/agent-code-intelligence-1.0.0
+claude --plugin-dir /absolute/path/to/agent-code-intelligence-1.0.1
 ```
 
 The Claude manifest lives at `.claude-plugin/plugin.json` and points to `skills/` and `hooks/hooks.json`.
@@ -111,13 +111,20 @@ This local SQLite store is intentionally small. Use Mem0/Graphiti/Cognee when yo
 
 ## MCP profiles
 
+Install and initialize Serena first:
+
 ```bash
-python3 scripts/render_mcp_config.py minimal
-python3 scripts/render_mcp_config.py semantic
-python3 scripts/render_mcp_config.py graph
-python3 scripts/render_mcp_config.py memory
-python3 scripts/render_mcp_config.py full
+uv tool install -p 3.13 serena-agent
+serena init
 ```
+
+```bash
+python3 scripts/render_mcp_config.py minimal claude-code
+python3 scripts/render_mcp_config.py minimal codex
+```
+
+Replace `minimal` with `semantic`, `graph`, `memory`, or `full` as needed. The renderer selects
+Serena's host-specific context while using the installed `serena` command.
 
 `minimal` is the recommended starting profile. The output is an example configuration and does not modify your host.
 

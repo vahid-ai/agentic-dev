@@ -10,4 +10,4 @@ profiles:
 	python3 scripts/render_mcp_config.py minimal
 
 zip:
-	cd .. && zip -qr agent-code-intelligence-1.0.0.zip agent-code-intelligence-1.0.0
+	cd .. && zip -qr agent-code-intelligence-1.0.1.zip agent-code-intelligence-1.0.1

@@ -1,6 +1,6 @@
 {
   "name": "agent-code-intelligence",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Token-efficient codebase search, semantic navigation, graph analysis, documentation retrieval, and verified agent memory routing for Claude Code and Codex.",
   "license": "MIT",
   "keywords": [

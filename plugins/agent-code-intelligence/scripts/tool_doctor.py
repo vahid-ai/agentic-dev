@@ -9,7 +9,7 @@ checks = [
     ("jq", "JSON filtering"),
     ("yq", "YAML filtering"),
     ("fzf", "interactive fuzzy selection"),
-    ("uvx", "Serena / Python MCP launcher"),
+    ("serena", "Serena MCP (install with `uv tool install -p 3.13 serena-agent`)"),
     ("npx", "Context7 / Repomix launcher"),
     ("grepai", "semantic code search"),
     ("zoekt", "large-corpus indexed search"),

@@ -10,7 +10,7 @@ for rel in [".claude-plugin/plugin.json", ".codex-plugin/plugin.json", "hooks/ho
 for manifest in [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]:
     data = json.loads((ROOT/manifest).read_text())
     assert data["name"] == "agent-code-intelligence"
-    assert data["version"] == "1.0.0"
+    assert data["version"] == "1.0.1"
     assert data["skills"] == "./skills/"
 
 skills = list((ROOT/"skills").glob("*/SKILL.md"))
@@ -27,7 +27,14 @@ profiles = json.loads((ROOT/"config/profiles.json").read_text())
 for names in profiles.values():
     assert all(n in ints for n in names)
 
-# Smoke-test render and route helpers.
-subprocess.run([sys.executable, str(ROOT/"scripts/render_mcp_config.py"), "minimal"], check=True, stdout=subprocess.DEVNULL)
+# Smoke-test host-specific rendering and route helpers.
+for host in ["claude-code", "codex"]:
+    rendered = subprocess.check_output(
+        [sys.executable, str(ROOT/"scripts/render_mcp_config.py"), "minimal", host],
+        text=True,
+    )
+    serena = json.loads(rendered)["mcpServers"]["serena"]
+    assert serena["command"] == "serena"
+    assert serena["args"] == ["start-mcp-server", "--project-from-cwd", f"--context={host}"]
 subprocess.run([sys.executable, str(ROOT/"scripts/route.py"), "symbol"], check=True, stdout=subprocess.DEVNULL)
 print(f"ok: {len(skills)} skills, manifests/config/scripts validated")
