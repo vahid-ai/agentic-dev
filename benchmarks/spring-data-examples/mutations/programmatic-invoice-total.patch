@@ -1,0 +1,7 @@
+diff --git a/mongodb/aggregation/src/main/java/example/springdata/mongodb/aggregation/OrderRepositoryImpl.java b/mongodb/aggregation/src/main/java/example/springdata/mongodb/aggregation/OrderRepositoryImpl.java
+index c02b1ed..df71376 100644
+--- a/mongodb/aggregation/src/main/java/example/springdata/mongodb/aggregation/OrderRepositoryImpl.java
++++ b/mongodb/aggregation/src/main/java/example/springdata/mongodb/aggregation/OrderRepositoryImpl.java
+@@ -55 +55 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
+-						.andExpression("'$items.price' * '$items.quantity'").as("lineTotal"), //
++						.andExpression("'$items.price' + '$items.quantity'").as("lineTotal"), //

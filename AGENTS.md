@@ -24,6 +24,9 @@ docker compose up -d                      # ClickHouse + otel-collector (ports b
 uv run agentic-dev telemetry wait         # block until ClickHouse answers (default 60s timeout)
 uv run agentic-dev telemetry status       # JSON: connection summary + version + otel_* tables
 uv run agentic-dev repositories list      # print catalog placeholders
+uv run agentic-dev repositories checkout --all  # explicit network: initialize pinned submodules
+uv run agentic-dev benchmarks list        # list deterministic seeded tasks
+uv run agentic-dev benchmarks status      # check pins, tools, Java, and Docker
 ./scripts/claude-with-telemetry.sh        # launch `claude` with OTel env vars pointed at the collector
 uv run marimo edit notebooks/01_telemetry_explorer.py
 docker compose logs -f otel-collector
@@ -47,11 +50,13 @@ otel-collector (`infra/otel-collector.yaml`, contrib ClickHouse exporter with `c
   `_safe_limit`. Filters on `ServiceName = 'claude-code'` / `MetricName LIKE 'claude_code.%'` and
   can list sessions, load one session's events/metrics/spans, and count both signals for one
   `experiment.id` during end-to-end verification.
+- `benchmarks.py` — parses task manifests, validates submodule pins and prerequisites, creates one
+  detached worktree per run, launches Claude with benchmark tags, runs graders, and scores results.
 - `session_graph.py` — pure normalization and HTML rendering for the chronological session graph;
   merges events, sum metrics, and optional spans without querying ClickHouse.
-- `catalog.py` — reads `config/repositories.toml` into `Repository` records; `importable` is only
-  true when `status == "ready"` and `pinned_commit != "TODO"`.
-- `cli.py` — argparse entry point `agentic-dev` (`repositories list`, `telemetry status|wait`).
+- `catalog.py` — reads `config/repositories.toml`; importable entries require an allowed status and
+  a full 40-character commit SHA.
+- `cli.py` — argparse entry point for repositories, benchmarks, and telemetry.
   It is the one place that catches broad exceptions to turn them into a single stderr line.
 
 Notebooks (`notebooks/*.py`) are Marimo apps that import only from `agentic_dev`; keep query logic
@@ -59,11 +64,10 @@ in `telemetry.py`, not in cells.
 
 ## Constraints that are deliberate (don't "fix" them)
 
-- **No repositories are ever cloned by the scaffold.** Every entry in `config/repositories.toml`
-  is `status = "placeholder"`, `pinned_commit = "TODO"`, and `tests/test_catalog.py` asserts this.
-  `workspaces/repos/` must stay empty apart from its README. Any future importer must follow
-  `docs/repository-imports.md` (full-SHA pins, bare mirror + lock manifest, per-run disposable
-  worktree, explicit network-enabled command). The `juice-shop` (vulnerable) and
+- **Repository checkout is explicit.** Click and Spring Data Examples are shallow submodules at
+  reviewed full SHAs. Do not move their pins casually, initialize them from notebooks, or perform
+  benchmark work in the source checkout; each run gets a detached worktree. All other entries stay
+  placeholders. The `juice-shop` (vulnerable) and
   `overtly-malicious-skills` (malicious) entries need network-restricted sandboxes; the malicious
   one must never be installed into a real agent environment.
 - **Privacy defaults.** `OTEL_LOG_USER_PROMPTS`, `OTEL_LOG_ASSISTANT_RESPONSES`,

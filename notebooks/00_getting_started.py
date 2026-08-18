@@ -19,11 +19,12 @@ def _(mo):
     mo.md("""
     # Agentic Development Labs
 
-    This environment is designed for repeatable experiments, not one-off demos. Each future
+    This environment is designed for repeatable experiments, not one-off demos. Each
     coding-agent run should identify a pinned repository revision, task mutation, harness
     configuration, model, token budget, and experiment ID.
 
-    **No example repositories have been imported.** The table below is a metadata-only plan.
+    **Repository checkout is explicit.** Click and Spring Data Examples are pinned submodules;
+    the other entries remain metadata-only plans.
     """)
     return
 
@@ -49,7 +50,7 @@ def _(ClickHouseSettings, load_catalog):
 def _(mo, repository_rows):
     mo.vstack(
         [
-            mo.md("## Planned repository corpus"),
+            mo.md("## Repository corpus"),
             mo.ui.table(repository_rows),
         ]
     )

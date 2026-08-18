@@ -1,5 +1,5 @@
-# Metadata only. The scaffold MUST NOT clone these entries.
-# See docs/repository-imports.md before changing a status to "ready".
+# Public benchmark repositories are placeholders unless explicitly represented by a pinned
+# submodule. Submodule checkout is always an explicit, network-enabled user action.
 
 [[repositories]]
 id = "requests"
@@ -24,9 +24,11 @@ id = "spring-data-examples"
 url = "https://github.com/spring-projects/spring-data-examples.git"
 category = "spring-mongodb"
 purpose = "Spring Boot and MongoDB repository, aggregation, and reactive labs"
-status = "placeholder"
-pinned_commit = "TODO"
+status = "submodule"
+pinned_commit = "7747029e6157cb780862826b6ae87c88d7a4df3c"
 risk = "standard"
+path = "workspaces/repos/spring-data-examples"
+license = "Apache-2.0"
 
 [[repositories]]
 id = "now-in-android"
@@ -51,9 +53,11 @@ id = "click"
 url = "https://github.com/pallets/click.git"
 category = "best-practices"
 purpose = "Small, disciplined library for repository-level agent instructions"
-status = "placeholder"
-pinned_commit = "TODO"
+status = "submodule"
+pinned_commit = "f36d58bbd7f188178de2d4fe1d0292c510375ca7"
 risk = "standard"
+path = "workspaces/repos/click"
+license = "BSD-3-Clause"
 
 [[repositories]]
 id = "h11"
@@ -81,4 +85,3 @@ purpose = "Malicious agent skill and scanner-bypass defensive exercises"
 status = "placeholder"
 pinned_commit = "TODO"
 risk = "malicious"
-

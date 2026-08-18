@@ -10,8 +10,15 @@ for rel in [".claude-plugin/plugin.json", ".codex-plugin/plugin.json", "hooks/ho
 for manifest in [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]:
     data = json.loads((ROOT/manifest).read_text())
     assert data["name"] == "agent-code-intelligence"
-    assert data["version"] == "1.0.1"
+    assert data["version"] == "1.1.0"
     assert data["skills"] == "./skills/"
+
+agent = (ROOT / "agents" / "codebase-intelligence.md").read_text()
+assert agent.startswith("---\n")
+assert "\nname: codebase-intelligence\n" in agent
+assert "\nmodel: haiku\n" in agent
+assert "\n  - agent-code-intelligence:codebase-intelligence-router\n" in agent
+assert "\n  - Write\n" in agent and "\n  - Edit\n" in agent
 
 skills = list((ROOT/"skills").glob("*/SKILL.md"))
 assert len(skills) >= 10

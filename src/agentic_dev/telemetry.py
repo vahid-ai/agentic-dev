@@ -197,6 +197,49 @@ class ClickHouseTelemetry:
             client.close()
         return {"events": int(event_count), "metrics": int(metric_count)}
 
+    def experiment_summary(self, experiment_id: str) -> dict[str, int | float]:
+        """Return the scoring signals emitted by one benchmark experiment."""
+        client = self._client()
+        parameters = {"experiment_id": experiment_id}
+        try:
+            event_row = client.query(
+                """
+                SELECT
+                    countIf(EventName = 'claude_code.tool_result') AS tool_calls,
+                    countIf(EventName = 'claude_code.api_request') AS turns,
+                    dateDiff('millisecond', min(Timestamp), max(Timestamp))
+                        / 1000 AS duration_seconds
+                FROM otel_logs
+                WHERE ServiceName = 'claude-code'
+                  AND ResourceAttributes['experiment.id'] = {experiment_id:String}
+                """,
+                parameters=parameters,
+            ).result_rows[0]
+            metric_row = client.query(
+                """
+                SELECT
+                    sumIf(Value, MetricName = 'claude_code.token.usage'
+                        AND Attributes['type'] = 'input') AS input_tokens,
+                    sumIf(Value, MetricName = 'claude_code.token.usage'
+                        AND Attributes['type'] = 'output') AS output_tokens,
+                    sumIf(Value, MetricName = 'claude_code.cost.usage') AS cost_usd
+                FROM otel_metrics_sum
+                WHERE MetricName LIKE 'claude_code.%'
+                  AND ResourceAttributes['experiment.id'] = {experiment_id:String}
+                """,
+                parameters=parameters,
+            ).result_rows[0]
+        finally:
+            client.close()
+        return {
+            "tool_calls": int(event_row[0]),
+            "turns": int(event_row[1]),
+            "duration_seconds": float(event_row[2]),
+            "input_tokens": int(metric_row[0]),
+            "output_tokens": int(metric_row[1]),
+            "cost_usd": float(metric_row[2]),
+        }
+
     def _query_rows(
         self,
         query: str,

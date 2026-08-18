@@ -1,4 +1,4 @@
-# Agent Code Intelligence v1.0.1
+# Agent Code Intelligence v1.1.0
 
 A dual-host Claude Code + Codex plugin for **token-efficient codebase understanding** and **verified agent memory**.
 
@@ -42,7 +42,7 @@ Letta (persistent stateful agent architecture)
 
 ## Why the plugin does not bundle every MCP as always-on
 
-MCP tool schemas themselves consume context, overlapping code indexers duplicate work, and remote servers expand the trust boundary. v1.0.1 therefore bundles **routing skills + setup profiles**, not a giant `.mcp.json` that starts everything automatically.
+MCP tool schemas themselves consume context, overlapping code indexers duplicate work, and remote servers expand the trust boundary. v1.1.0 therefore bundles **routing skills + setup profiles**, not a giant `.mcp.json` that starts everything automatically.
 
 Use the `mcp-profile-setup` skill or:
 
@@ -68,12 +68,19 @@ Then review and copy only the servers you actually want.
 - `toolchain-doctor` — inspect local capabilities.
 - `mcp-profile-setup` — render optional MCP profiles.
 
+## Included Claude Code subagent
+
+- `agent-code-intelligence:codebase-intelligence` — a read-only Haiku subagent that Claude can
+  invoke automatically whenever a task requires codebase search, navigation, impact analysis, or
+  architectural understanding. It preloads the plugin's `codebase-intelligence-router` skill and
+  returns compact, file-and-symbol-level evidence to the parent agent.
+
 ## Claude Code
 
 Test a local checkout directly:
 
 ```bash
-claude --plugin-dir /absolute/path/to/agent-code-intelligence-1.0.1
+claude --plugin-dir /absolute/path/to/agent-code-intelligence-1.1.0
 ```
 
 The Claude manifest lives at `.claude-plugin/plugin.json` and points to `skills/` and `hooks/hooks.json`.

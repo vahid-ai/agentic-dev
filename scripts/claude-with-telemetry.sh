@@ -31,6 +31,18 @@ export OTEL_LOG_TOOL_CONTENT="${OTEL_LOG_TOOL_CONTENT:-0}"
 experiment_id="${AGENTIC_DEV_EXPERIMENT_ID:-local}"
 cohort="${AGENTIC_DEV_COHORT:-engineering}"
 lab_attributes="course.name=agentic-dev,experiment.id=${experiment_id},cohort.name=${cohort}"
+if [[ -n "${AGENTIC_DEV_BENCHMARK_RUN_ID:-}" ]]; then
+  lab_attributes+=",benchmark.run_id=${AGENTIC_DEV_BENCHMARK_RUN_ID}"
+fi
+if [[ -n "${AGENTIC_DEV_BENCHMARK_TASK:-}" ]]; then
+  lab_attributes+=",benchmark.task=${AGENTIC_DEV_BENCHMARK_TASK}"
+fi
+if [[ -n "${AGENTIC_DEV_BENCHMARK_REPOSITORY:-}" ]]; then
+  lab_attributes+=",benchmark.repository=${AGENTIC_DEV_BENCHMARK_REPOSITORY}"
+fi
+if [[ -n "${AGENTIC_DEV_BENCHMARK_HARNESS:-}" ]]; then
+  lab_attributes+=",benchmark.harness=${AGENTIC_DEV_BENCHMARK_HARNESS}"
+fi
 if [[ -n "${OTEL_RESOURCE_ATTRIBUTES:-}" ]]; then
   export OTEL_RESOURCE_ATTRIBUTES="${OTEL_RESOURCE_ATTRIBUTES},${lab_attributes}"
 else

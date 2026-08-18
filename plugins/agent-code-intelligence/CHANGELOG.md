@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0 — 2026-08-18
+
+- Added a read-only Haiku codebase-intelligence subagent for automatic search and understanding
+  delegation in Claude Code.
+- Preloaded the codebase-intelligence-router skill into the subagent.
+
 ## 1.0.1 — 2026-08-18
 
 - Replaced Serena's source-based `uvx` launch with the installed `serena-agent` CLI.

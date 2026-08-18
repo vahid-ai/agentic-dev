@@ -1,0 +1,7 @@
+diff --git a/src/click/utils.py b/src/click/utils.py
+index 8d7df57..e01e1b1 100644
+--- a/src/click/utils.py
++++ b/src/click/utils.py
+@@ -92 +92 @@ def _make_default_short_help(help: str, max_length: int = 45) -> str:
+-        if word[-1] == ".":  # sentence end, truncate without "..."
++        if "." in word:  # sentence end, truncate without "..."
