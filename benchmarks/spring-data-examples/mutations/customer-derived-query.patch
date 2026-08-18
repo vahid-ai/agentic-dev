@@ -1,0 +1,7 @@
+diff --git a/mongodb/example/src/main/java/example/springdata/mongodb/customer/CustomerRepository.java b/mongodb/example/src/main/java/example/springdata/mongodb/customer/CustomerRepository.java
+index 42f49c6..3d17ee8 100644
+--- a/mongodb/example/src/main/java/example/springdata/mongodb/customer/CustomerRepository.java
++++ b/mongodb/example/src/main/java/example/springdata/mongodb/customer/CustomerRepository.java
+@@ -43 +43 @@ public interface CustomerRepository extends CrudRepository<Customer, String> {
+-	List<Customer> findByLastname(String lastname, Sort sort);
++	List<Customer> findByFirstname(String lastname, Sort sort);

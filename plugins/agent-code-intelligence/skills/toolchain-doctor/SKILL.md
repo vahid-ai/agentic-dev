@@ -16,7 +16,8 @@ If neither variable is available, locate the installed plugin directory and run 
 Interpretation:
 
 - Missing `rg`/`fd`/`sg`/`jq`/`yq` affects the cheap local tiers.
-- Missing `uvx` affects Serena and convenient Python MCP launchers.
+- Missing `serena` affects Serena MCP. Install it with `uv tool install -p 3.13 serena-agent`,
+  then run `serena init` before configuring a host profile.
 - Missing `npx` affects Context7/Repomix launch profiles.
 - Missing `grepai`, `zoekt`, `codegraph-server`, or `code-review-graph` means those optional escalation layers are unavailable.
 - JetBrains MCP availability is controlled by the IDE, not just a shell binary.

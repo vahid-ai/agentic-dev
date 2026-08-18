@@ -1,0 +1,43 @@
+[benchmark]
+id = "spring-data-examples"
+repository = "spring-data-examples"
+description = "Spring Data MongoDB derived-query and aggregation maintenance tasks."
+
+[requirements]
+tools = ["git", "java", "docker"]
+minimum_java = 25
+docker = true
+
+[commands]
+setup = [["./mvnw", "-pl", "mongodb/example,mongodb/aggregation", "-am", "-DskipTests", "install"]]
+regression = [["./mvnw", "-pl", "mongodb/example,mongodb/aggregation", "-am", "test"]]
+quality = [["./mvnw", "-pl", "mongodb/example,mongodb/aggregation", "-am", "-DskipTests", "verify"]]
+
+[budgets]
+input_tokens = 30000
+output_tokens = 8000
+turns = 20
+test_executions = 10
+tool_calls = 100
+wall_seconds = 1800
+changed_lines = 120
+
+[[tasks]]
+id = "spring-customer-derived-query"
+prompt = """
+The MongoDB customer example's dynamically sorted lookup no longer returns customers selected by
+last name. Restore the intended Spring Data derived-query behavior without changing the integration
+test, and run the smallest relevant Maven test before broader validation.
+"""
+mutation = "mutations/customer-derived-query.patch"
+focused = [["./mvnw", "-pl", "mongodb/example", "-am", "-Dtest=CustomerRepositoryIntegrationTest", "-Dsurefire.failIfNoSpecifiedTests=false", "test"]]
+
+[[tasks]]
+id = "spring-programmatic-invoice-total"
+prompt = """
+The programmatic MongoDB aggregation example calculates incorrect invoice totals for orders with
+quantities greater than one. Repair the programmatic pipeline without changing the declarative
+pipeline or integration tests, then run the smallest relevant Maven test before broader validation.
+"""
+mutation = "mutations/programmatic-invoice-total.patch"
+focused = [["./mvnw", "-pl", "mongodb/aggregation", "-am", "-Dtest=OrderRepositoryIntegrationTests", "-Dsurefire.failIfNoSpecifiedTests=false", "test"]]

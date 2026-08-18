@@ -1,0 +1,45 @@
+[benchmark]
+id = "click"
+repository = "click"
+description = "Focused maintenance tasks in Click's help and terminal-formatting code."
+
+[requirements]
+tools = ["git", "uv"]
+docker = false
+
+[commands]
+setup = [["uv", "sync", "--all-groups"]]
+regression = [["uv", "run", "pytest", "-q"]]
+quality = [
+  ["uv", "run", "ruff", "check", "."],
+  ["uv", "run", "mypy"],
+]
+
+[budgets]
+input_tokens = 30000
+output_tokens = 8000
+turns = 20
+test_executions = 10
+tool_calls = 100
+wall_seconds = 1800
+changed_lines = 120
+
+[[tasks]]
+id = "click-short-help-dot-token"
+prompt = """
+Fix Click's default short-help generation. A period inside a token such as a path or filename must
+not be treated as the end of a sentence, while a trailing sentence period should still stop the
+summary. Keep the patch focused, run the relevant tests, and do not modify test expectations.
+"""
+mutation = "mutations/short-help-dot-token.patch"
+focused = [["uv", "run", "pytest", "-q", "tests/test_utils/test_make_default_short_help.py"]]
+
+[[tasks]]
+id = "click-styled-usage-width"
+prompt = """
+Fix help usage wrapping when a caller supplies an ANSI-styled Usage prefix. Escape bytes must not
+consume terminal width or force [OPTIONS] onto a second line. Keep the patch focused, run the
+relevant formatting tests, and do not modify test expectations.
+"""
+mutation = "mutations/styled-usage-width.patch"
+focused = [["uv", "run", "pytest", "-q", "tests/test_formatting.py"]]

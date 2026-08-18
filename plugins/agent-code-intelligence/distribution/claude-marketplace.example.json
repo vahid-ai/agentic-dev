@@ -6,9 +6,9 @@
   "plugins": [
     {
       "name": "agent-code-intelligence",
-      "source": "./agent-code-intelligence-1.0.0",
+      "source": "./agent-code-intelligence-1.1.0",
       "description": "Token-efficient codebase search and verified memory routing.",
-      "version": "1.0.0"
+      "version": "1.1.0"
     }
   ]
 }

@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "agent-code-intelligence",
   "displayName": "Agent Code Intelligence",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Token-efficient codebase search, semantic navigation, graph analysis, documentation retrieval, and verified agent memory routing for Claude Code and Codex.",
   "license": "MIT",
   "keywords": [
@@ -15,6 +15,9 @@
     "token-efficiency",
     "claude-code",
     "codex"
+  ],
+  "agents": [
+    "./agents/codebase-intelligence.md"
   ],
   "skills": "./skills/",
   "hooks": "./hooks/hooks.json"

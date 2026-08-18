@@ -1,0 +1,7 @@
+diff --git a/src/click/formatting.py b/src/click/formatting.py
+index 25bd89c..4a166b4 100644
+--- a/src/click/formatting.py
++++ b/src/click/formatting.py
+@@ -180 +180 @@ class HelpFormatter:
+-        if text_width >= (term_len(usage_prefix) + 20):
++        if text_width >= (len(usage_prefix) + 20):

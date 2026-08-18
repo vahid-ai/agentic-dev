@@ -8,23 +8,21 @@ app = marimo.App(width="medium")
 def _():
     import marimo as mo
 
+    from agentic_dev.benchmarks import load_benchmarks
     from agentic_dev.catalog import load_catalog
 
-    return load_catalog, mo
+    return load_benchmarks, load_catalog, mo
 
 
 @app.cell
-def _(load_catalog, mo):
+def _(load_benchmarks, load_catalog, mo):
     catalog = load_catalog()
-    repository = mo.ui.dropdown(
-        options={f"{item.id} — {item.category}": item.id for item in catalog},
-        value=catalog[0].id,
-        label="Repository placeholder",
-    )
-    task = mo.ui.text_area(
-        label="Candidate benchmark task",
-        placeholder="Describe a mutation or feature without including its solution...",
-        full_width=True,
+    suites = load_benchmarks()
+    tasks = [(suite, task) for suite in suites for task in suite.tasks]
+    task_picker = mo.ui.dropdown(
+        options={f"{task.id} — {suite.repository_id}": task.id for suite, task in tasks},
+        value=tasks[0][1].id,
+        label="Implemented benchmark task",
     )
     token_budget = mo.ui.slider(
         start=5_000,
@@ -33,23 +31,22 @@ def _(load_catalog, mo):
         value=30_000,
         label="Input token ceiling",
     )
-    return catalog, repository, task, token_budget
+    return catalog, suites, task_picker, token_budget
 
 
 @app.cell
-def _(mo, repository, task, token_budget):
+def _(mo, task_picker, token_budget):
     mo.vstack(
         [
             mo.md("# Experiment designer"),
             mo.callout(
                 mo.md(
-                    "This creates an experiment specification only. It does not clone, install, "
-                    "or execute the selected repository."
+                    "This previews a runnable specification. Repository checkout, dependency "
+                    "setup, model execution, and grading remain explicit CLI actions."
                 ),
-                kind="warn",
+                kind="info",
             ),
-            repository,
-            task,
+            task_picker,
             token_budget,
         ]
     )
@@ -57,22 +54,23 @@ def _(mo, repository, task, token_budget):
 
 
 @app.cell
-def _(catalog, mo, repository, task, token_budget):
-    selected = next(item for item in catalog if item.id == repository.value)
+def _(catalog, mo, suites, task_picker, token_budget):
+    selected_suite, selected_task = next(
+        (suite, task) for suite in suites for task in suite.tasks if task.id == task_picker.value
+    )
+    selected_repository = next(item for item in catalog if item.id == selected_suite.repository_id)
     experiment_spec = {
-        "repository_id": selected.id,
-        "repository_status": selected.status,
-        "pinned_commit": selected.pinned_commit,
-        "risk": selected.risk,
-        "task": task.value,
+        "task_id": selected_task.id,
+        "repository_id": selected_repository.id,
+        "repository_status": selected_repository.status,
+        "pinned_commit": selected_repository.pinned_commit,
+        "risk": selected_repository.risk,
+        "prompt": selected_task.prompt,
         "input_token_ceiling": token_budget.value,
-        "required_before_run": [
-            "review and pin a full commit SHA",
-            "import through the future verified importer",
-            "provision an isolation tier matching repository risk",
-            "define visible and hidden tests",
-            "record harness and model configuration",
-        ],
+        "focused_commands": selected_task.focused_commands,
+        "regression_commands": selected_suite.regression_commands,
+        "quality_commands": selected_suite.quality_commands,
+        "prepare": f"uv run agentic-dev benchmarks prepare {selected_task.id}",
     }
     mo.vstack([mo.md("## Draft specification"), mo.json(experiment_spec)])
     return

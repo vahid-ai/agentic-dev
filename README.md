@@ -8,9 +8,12 @@ This repository is the runnable scaffold for the curriculum described in
   design;
 - an OpenTelemetry Collector that receives Claude Code metrics, events, and optional traces;
 - ClickHouse as the local telemetry backend; and
-- a metadata-only catalog for the future example repositories.
+- two full-SHA-pinned, shallow benchmark submodules plus a metadata catalog for future repositories;
+  and
+- a benchmark runner that prepares seeded tasks in disposable worktrees and grades their tests,
+  quality, telemetry efficiency, and patch size.
 
-No example repository is cloned or vendored by this scaffold.
+The submodule source is not downloaded by a normal clone. Checkout remains an explicit action.
 
 ## Quick start
 
@@ -40,6 +43,9 @@ Useful commands:
 
 ```bash
 uv run agentic-dev repositories list
+uv run agentic-dev repositories status
+uv run agentic-dev benchmarks list
+uv run agentic-dev benchmarks status
 uv run agentic-dev telemetry status
 uv run marimo edit notebooks/00_getting_started.py
 uv run marimo edit notebooks/02_experiment_designer.py
@@ -49,7 +55,7 @@ docker compose down
 
 ## Agent Code Intelligence plugin
 
-The repository vendors Agent Code Intelligence v1.0.0 in
+The repository vendors Agent Code Intelligence v1.1.0 in
 [`plugins/agent-code-intelligence`](plugins/agent-code-intelligence). Run Claude Code with the
 plugin directly from the checkout:
 
@@ -60,7 +66,8 @@ claude --plugin-dir "$PWD/plugins/agent-code-intelligence"
 The plugin provides code-search routing, optional MCP profiles, and opt-in failure capture. Its
 failure hook does not persist data unless `AGENT_TOOLKIT_CAPTURE_FAILURES=1` is set. See the
 [plugin README](plugins/agent-code-intelligence/README.md) for its skills, security posture, and
-configuration options.
+configuration options. Claude Code also receives a read-only Haiku subagent that it can delegate
+to automatically for codebase search and understanding tasks.
 
 ## End-to-end telemetry test
 
@@ -116,25 +123,55 @@ The exporter creates its development/lab schema automatically. A production depl
 manage schemas explicitly, use TLS and authentication, add retention policy, and put the collector
 behind an authenticated endpoint.
 
-## Repository labs are placeholders
+## Reproducible repository benchmarks
 
 [`config/repositories.toml`](config/repositories.toml) records the proposed repositories and lab
-roles, but every entry has `status = "placeholder"` and `pinned_commit = "TODO"`. The future import
-workflow is specified in [`docs/repository-imports.md`](docs/repository-imports.md). In brief, it
-must resolve an reviewed commit, verify provenance, create an immutable local mirror, and provision
-a disposable worktree for each experiment. The vulnerable and malicious repositories require a
-separate network-restricted sandbox.
+roles. `spring-data-examples` and `click` are shallow Git submodules pinned to reviewed full commit
+SHAs; all other entries remain metadata-only placeholders. Fetch the two benchmark sources only
+when you want to run them:
+
+```bash
+uv run agentic-dev repositories checkout --all
+uv run agentic-dev benchmarks status
+```
+
+The Click suite needs `uv`. The Spring Data suite needs JDK 25 and a running Docker daemon because
+its MongoDB integration tests use Testcontainers. Four seeded regression tasks are included: Click
+short-help parsing, Click ANSI usage width, a Spring Data derived query, and a programmatic MongoDB
+invoice aggregation.
+
+A complete run is explicit and isolated:
+
+```bash
+uv run agentic-dev benchmarks prepare click-short-help-dot-token \
+  --output .agentic-dev/runs/click-demo
+uv run agentic-dev benchmarks setup .agentic-dev/runs/click-demo
+uv run agentic-dev benchmarks launch .agentic-dev/runs/click-demo --model sonnet
+uv run agentic-dev benchmarks grade .agentic-dev/runs/click-demo
+```
+
+`prepare` creates a detached worktree, applies and commits the seeded mutation baseline, and writes
+`run.json` plus the task prompt. `launch` tags Claude telemetry with run, task, repository, and
+harness attributes. `grade` runs the focused grader, the upstream regression suite, and upstream
+quality commands, then writes `grade.json`. If ClickHouse is unavailable, correctness grading still
+works and the report clearly omits unavailable efficiency points. See
+[`benchmarks/README.md`](benchmarks/README.md) and
+[`docs/repository-imports.md`](docs/repository-imports.md) for lifecycle and isolation details.
+
+The vulnerable and malicious catalog entries remain placeholders and require separate,
+network-restricted isolation.
 
 ## Project layout
 
 ```text
-config/repositories.toml       planned repository corpus (metadata only)
+benchmarks/                    task manifests and deterministic mutation patches
+config/repositories.toml       pinned submodules plus planned repository metadata
 infra/otel-collector.yaml      OTLP -> ClickHouse pipeline
 notebooks/                     executable Marimo labs
 plugins/agent-code-intelligence/
                                vendored Claude Code and Codex code-intelligence plugin
 scripts/claude-with-telemetry.sh
-src/agentic_dev/               catalog, settings, and ClickHouse query helpers
+src/agentic_dev/               catalog, benchmark runner, settings, and telemetry helpers
 tests/                         offline scaffold tests
-workspaces/repos/              intentionally empty import destination
+workspaces/repos/              optional shallow benchmark submodules
 ```

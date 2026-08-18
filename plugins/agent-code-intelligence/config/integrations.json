@@ -1,17 +1,21 @@
 {
   "serena": {
     "kind": "stdio",
-    "command": "uvx",
+    "command": "serena",
     "args": [
-      "--from",
-      "git+https://github.com/oraios/serena",
-      "serena",
       "start-mcp-server",
-      "--context",
-      "ide-assistant"
+      "--project-from-cwd"
     ],
+    "host_args": {
+      "claude-code": [
+        "--context=claude-code"
+      ],
+      "codex": [
+        "--context=codex"
+      ]
+    },
     "role": "symbol-navigation",
-    "notes": "Portable symbol/code-intelligence MCP. Requires uv/uvx."
+    "notes": "Portable symbol/code-intelligence MCP. Install with `uv tool install -p 3.13 serena-agent`, then run `serena init`."
   },
   "context7": {
     "kind": "stdio",

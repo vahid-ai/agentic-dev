@@ -1,0 +1,8 @@
+[submodule "workspaces/repos/spring-data-examples"]
+	path = workspaces/repos/spring-data-examples
+	url = https://github.com/spring-projects/spring-data-examples.git
+	shallow = true
+[submodule "workspaces/repos/click"]
+	path = workspaces/repos/click
+	url = https://github.com/pallets/click.git
+	shallow = true

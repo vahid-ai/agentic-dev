@@ -15,12 +15,19 @@ if profile not in profiles:
     print("Unknown profile. Choose: " + ", ".join(profiles), file=sys.stderr)
     sys.exit(2)
 
+host = sys.argv[2] if len(sys.argv) > 2 else "claude-code"
+supported_hosts = ("claude-code", "codex")
+if host not in supported_hosts:
+    print("Unknown host. Choose: " + ", ".join(supported_hosts), file=sys.stderr)
+    sys.exit(2)
+
 servers = {}
 skipped = []
 for name in profiles[profile]:
     x = integrations[name]
     if x["kind"] == "stdio":
-        item = {"command": x["command"], "args": x.get("args", [])}
+        args = x.get("args", []) + x.get("host_args", {}).get(host, [])
+        item = {"command": x["command"], "args": args}
         if x.get("env"):
             item["env"] = x["env"]
         servers[name] = item
